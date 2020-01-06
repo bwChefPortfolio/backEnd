@@ -4,7 +4,8 @@ const helmet = require('helmet');
 
 const authenticate = require('../auth/restricted-middleware.js');
 const authRouter = require('../auth/auth-router.js');
-const chefsRouter = require('../chefs/chefs-router.js');
+//const chefsRouter = require('../chefs/chefs-router.js');
+//const publicRouter = require('../public/public-router.js');
 
 const server = express();
 
@@ -13,6 +14,7 @@ server.use(cors());
 server.use(express.json());
 
 server.use('/auth', authRouter);
-server.use('/chefs', authenticate, jokesRouter);
+//server.use('/chefs', authenticate, chefsRouter);
+//server.use('/home', publicRouter);
 
 module.exports = server;
