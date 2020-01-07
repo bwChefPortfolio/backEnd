@@ -11,7 +11,6 @@ module.exports = (req, res, next) => {
         res.status(401).json({ message: "Invalid Token" });
       } else {
         req.token = decodedToken;
-
         next();
       }
     });

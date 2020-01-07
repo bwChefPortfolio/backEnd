@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const router = require("express").Router();
-const db = require("./auth-model.js");
+const db = require("../chefs/chefs-model.js");
 
 router.post("/register", (req, res) => {
   let user = req.body;
@@ -36,7 +36,7 @@ router.post("/login", (req, res) => {
       if (user && bcrypt.compareSync(password, user.password)) {
         // create token and send to user
         const token = signToken(user);
-        console.log(token);
+        //console.log(token);
         return res.status(200).json({ token, message: `${user.username} login successful` });
         //.token(token);
       } else {
