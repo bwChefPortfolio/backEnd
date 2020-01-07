@@ -37,7 +37,7 @@ router.post("/login", (req, res) => {
         // create token and send to user
         const token = signToken(user);
         console.log(token);
-        return res.status(200).json({ token, message: `Welcome ${user.username}!` }).token(token);
+        return res.status(200).json({ token, message: `${user.username} login successful` }).token(token);
       } else {
         return res.status(401).json({ message: "Invalid Credentials" });
       }
