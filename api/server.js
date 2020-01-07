@@ -17,7 +17,7 @@ server.use('/auth', authRouter);
 //server.use('/chefs', authenticate, chefsRouter);
 //server.use('/home', publicRouter);
 server.get('/', (req, res) => {
-    res.message("Welcome to Chef Portfolio Backend API")
+    res.send("Welcome to Chef Portfolio Backend API")
 })
 
 module.exports = server;
