@@ -2,8 +2,8 @@ exports.up = function(knex) {
   return knex.schema
     .createTable("chefs", tbl => {
       tbl.increments();
-      tbl.string("first-name", 128).notNullable();
-      tbl.string("last-name", 128).notNullable();
+      tbl.string("first_name", 128).notNullable();
+      tbl.string("last_name", 128).notNullable();
       tbl
         .string("username", 128)
         .notNullable()
@@ -18,12 +18,12 @@ exports.up = function(knex) {
     .createTable("recipes", tbl => {
       tbl.increments();
       tbl.string("title").notNullable();
-      tbl.string("meal-type", 128).notNullable();
-      tbl.string("image-url").notNullable();
+      tbl.string("meal_type", 128).notNullable();
+      tbl.string("image_url").notNullable();
       tbl.string("ingredients").notNullable();
       tbl.string("directions").notNullable();
       tbl
-        .integer("chef-id")
+        .integer("chef_id")
         .notNullable()
         .unsigned()
         .references("id")
