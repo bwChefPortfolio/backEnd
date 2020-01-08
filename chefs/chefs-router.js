@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 
 const db = require("./recipes-model.js");
 const chefs = require("./chefs-model.js");
@@ -9,15 +9,15 @@ router.use(express.json());
 
 router.get("/:username", async (req, res, next) => {
   //chefAuthZ(req.params.username);
-  console.log(req.token, req.body.chef_id);
+  //console.log(req.token, req.body.chef_id);
   const username = req.params.username;
   //console.log("username", username);
   await chefs
     .findBy({ username })
     .then(response => {
-      console.log(response[0]);
+      //console.log(response[0]);
       const chef = response[0];
-      db.findBy({ id: chef.id }).then(resp => {
+      db.findBy({ chef_id: chef.id }).then(resp => {
         if (resp.length === 0) {
           res.status(200).json({ message: "There are no recipes to display." });
         } else {
@@ -32,7 +32,6 @@ router.get("/:username", async (req, res, next) => {
     .catch(err => {
       next();
     })
-
     .catch(err => {
       console.log("GET to /chefs/:username error:", err);
       res
@@ -42,22 +41,22 @@ router.get("/:username", async (req, res, next) => {
 });
 
 router.post("/:username", async (req, res) => {
-  const toAdd = req.body;
-  console.log("toAdd", toAdd, req);
-  await db
-    .add(toAdd)
-    .then(response => {
-      res.status(201).json({ response });
-    })
-    .catch(err => {
-      console.log("create recipe error:", err);
-      res
-        .status(500)
-        .json({ message: "Database error creating recipe. Please try again." });
+  try {
+    const toAdd = {...req.body, chef_id: req.token.chef_id};
+    //console.log("toAdd", toAdd);
+    await db.add(toAdd).then(response => {
+      res.status(201).json(response);
     });
+  } catch (err) {
+    console.log("create recipe error:", err);
+    res
+      .status(500)
+      .json({ message: "Database error creating recipe. Please try again." });
+  }
 });
 
 router.delete("/:username/:recipe_id", (req, res) => {
+  //console.log(req.body);
   const id = req.params.recipe_id;
   db.remove(id)
     .then(count => {
