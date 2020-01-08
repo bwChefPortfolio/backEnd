@@ -1,11 +1,15 @@
-const router = require("express").Router();
+const express = require('express');
 
 const db = require("./recipes-model.js");
 const chefs = require("./chefs-model.js");
 //router.use('/', chefAuthZ);
 
+const router = express.Router();
+router.use(express.json());
+
 router.get("/:username", async (req, res, next) => {
-  console.log(req.token, req.body.chef_id)
+  //chefAuthZ(req.params.username);
+  console.log(req.token, req.body.chef_id);
   const username = req.params.username;
   //console.log("username", username);
   await chefs
@@ -38,7 +42,6 @@ router.get("/:username", async (req, res, next) => {
 });
 
 router.post("/:username", async (req, res) => {
-
   const toAdd = req.body;
   console.log("toAdd", toAdd, req);
   await db
@@ -74,17 +77,19 @@ router.delete("/:username/:recipe_id", (req, res) => {
 
 //middleware
 //check that username in url exists and matches chef logged in
-function chefAuthZ() {
-const username = req.params.username;
-console.log(username);
+function chefAuthZ(chef) {
+  const username = req.token.username;
+  chefs
+    .findBy({ username })
+    .then(response => {
+      //if(response === req.params.username)
+    })
+    .catch(err => {
+      console.log("chefAuthZ error:", err);
+    });
 }
 
 //check that recipe exists, belongs to chef
-function recipeAuth(recipeId) {
-
-
-}
-
-
+function recipeAuth(recipeId) {}
 
 module.exports = router;
