@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 const db = require("../chefs/chefs-model.js");
 
-router.post("/register", (req, res) => {
+router.post("/register", async (req, res) => {
   let user = req.body;
   if (user && user.password) {
     const hash = bcrypt.hashSync(user.password, 8);
@@ -14,7 +14,7 @@ router.post("/register", (req, res) => {
     return res.status(401).json({ message: "Invalid Credentials" });
   }
 
-  return db.add(user)
+  return await db.add(user)
     .then(newUser => {
       res.status(201).json(newUser);
     })

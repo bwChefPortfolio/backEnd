@@ -15,12 +15,21 @@ function findBy(filter) {
   return db("chefs").where(filter);
 }
 
-async function add(user) {
-  console.log(user);
-  const [id] = await db("chefs").insert(user);
-console.log(id);
+async function add(chef) {
+  const [id] = await db("chefs").insert(chef);
+
   return findById(id);
 }
+
+// async function add(user) {
+//   console.log("user", user);
+//   await db("chefs")
+//     .insert(user, "id")
+//     .then(ids => {
+//       const [id] = ids;
+//       return findById(id);
+//     });
+// }
 
 function findById(id) {
   return db("chefs")
