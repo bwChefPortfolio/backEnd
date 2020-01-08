@@ -4,7 +4,8 @@ module.exports = {
     add,
     find,
     findBy,
-    findById
+    findById,
+    remove
   };
   
   function find() {
@@ -28,6 +29,11 @@ module.exports = {
   
   function findById(id) {
     return db("recipes")
+      .where({ id });
+  }
+
+  function remove(id) {
+    return db("recipes")
       .where({ id })
-      .first();
+      .del();
   }

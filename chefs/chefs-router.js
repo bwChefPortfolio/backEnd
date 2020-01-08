@@ -26,4 +26,23 @@ router.get("/:username", async (req, res, next) => {
     });
 });
 
+//router.post()
+
+router.delete('/:username/:recipe_id', (req, res) => {
+  const id = req.params.recipe_id;
+  db.remove(id)
+  .then(count => {
+    if(count > 0){
+      res.status(200).json({ message: `Recipe ${id} has been deleted` });
+    }else{
+      res.status(404).json({ message: `Recipe ${id} could not be found` });
+    }
+  })
+  .catch(err => {
+console.log("Delete recipe error", err);
+res.status(500).json({ message: "database error removing this recipe, please try again" });
+  })
+})
+
+
 module.exports = router;
