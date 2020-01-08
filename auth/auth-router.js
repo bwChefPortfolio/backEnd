@@ -55,8 +55,10 @@ router.post("/login", (req, res) => {
 //custom middleware
 // creates the token for given user
 function signToken(user) {
+  console.log(" middleware", user);
   const payload = {
-    username: user.username
+    username: user.username,
+    chef_id: user.id
   };
 
   const secret = process.env.JWT_SECRET;
