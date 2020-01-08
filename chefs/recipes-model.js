@@ -15,10 +15,15 @@ module.exports = {
     return db("recipes").where(filter);
   }
   
-  async function add(recipe) {
-    const [id] = await db("recipes").insert(recipe);
-  
-    return findById(id);
+  function add(recipe) {
+    console.log("recipe", recipe);
+    return db("recipes")
+      .insert(recipe, "id")
+      .then(ids => {
+        console.log("ids", ids[0]);
+        const id = ids[0];
+        return findById(id);
+      });
   }
   
   function findById(id) {
