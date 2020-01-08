@@ -3,10 +3,14 @@ const router = require("express").Router();
 const db = require("../chefs/recipes-model.js");
 
 router.get("/", (req, res) => {
-  db.find()
+  db.findBy(req.body)
     .then(response => {
-      //console.log(response);
-      res.status(200).json(response);
+        if(response.length === 0){
+            res.status(200).json({message: "There are no recipes to display."});
+        }else {
+            //console.log(response);
+            res.status(200).json(response);
+        }
     })
     .catch(err => {
       console.log("GET to /home error:", err);
