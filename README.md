@@ -12,8 +12,8 @@ https://chef-portfolio-backend.herokuapp.com/
 | y          | POST   | /auth/register            | no         | returns new chef info (see chefs schema below) |                                                                                                                |
 | y          | POST   | /auth/login               | no         | returns token                                  |                                                                                                                |
 | y          | GET    | /chefs/:username           | yes        | returns all recipes for given chef             |                                                                                                                |
-|            | POST   | /chefs/:username           | yes        | returns added recipe                           |                                                                                                                |
-|            | PUT    | /chefs/:username/:recipe_id | yes        | returns edited recipe                          |                                                                                                                |
+|      y      | POST   | /chefs/:username           | yes        | returns added recipe                           |                                                                                                                |
+|       y     | PUT    | /chefs/:username/:recipe_id | yes        | returns the number of edited records                          |                                                                                                                |
 |      y      | DELETE | /chefs/:username/:recipe_id | yes        | returns the number of deleted records              |                                                                                                                |
 
 #### Chefs Schema

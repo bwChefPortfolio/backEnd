@@ -1,11 +1,11 @@
-const express = require("express");
+const router = require("express").Router();
 
-const db = require("./recipes-model.js");
+const db = require("../recipes/recipes-model.js");
 const chefs = require("./chefs-model.js");
-//router.use('/', chefAuthZ);
 
-const router = express.Router();
-router.use(express.json());
+const recipes = require("../recipes/recipes-router.js")
+
+router.use("/:username", chefAuthZ, recipes.router);
 
 router.get("/:username", chefAuthZ, async (req, res, next) => {
   const username = req.params.username;
@@ -19,10 +19,6 @@ router.get("/:username", chefAuthZ, async (req, res, next) => {
         if (resp.length === 0) {
           res.status(200).json({ message: "There are no recipes to display." });
         } else {
-          // const sortField = req.query.sortby || 'id';
-          //     const sorted = response.sort(
-          //       (a, b) => (a[sortField] < b[sortField] ? -1 : 1)
-          //     );
           res.status(200).json(resp);
         }
       });
@@ -55,7 +51,7 @@ router.post("/:username", chefAuthZ, async (req, res) => {
 });
 
 router.delete("/:username/:recipe_id", recipeAuth, (req, res) => {
-  //console.log(req.body);
+  console.log("In CHEFS router", req.body);
   const id = req.params.recipe_id;
   db.remove(id)
     .then(count => {
@@ -74,14 +70,13 @@ router.delete("/:username/:recipe_id", recipeAuth, (req, res) => {
 });
 
 router.put("/:username/:recipe_id", recipeAuth, (req, res) => {
-  //console.log(req.body);
- // chefAuthZ();
+  console.log("In CHEFS router", req.body);
   const changes = req.body;
   const id = req.params.recipe_id;
   db.update(id, changes)
     .then(recipe => {
       if (recipe) {
-        res.status(200).json({ recipe, message: "Recipe successfully updated" })
+        res.status(200).json({ message: "Recipe successfully updated" })
       } else {
         res.status(404).json({ message: "The recipe could not be updated" });
       }
@@ -99,7 +94,7 @@ router.put("/:username/:recipe_id", recipeAuth, (req, res) => {
 function chefAuthZ(req, res, next) {
   const tokenUser = req.token.username;
   const urlUser = req.params.username;
-  console.log(urlUser, tokenUser);
+  console.log("In chefAuthZ", urlUser, tokenUser);
 
   chefs
     .findBy({ username: urlUser })
@@ -112,6 +107,8 @@ function chefAuthZ(req, res, next) {
           .json({ message: "You are not authorized to view this page." });
       } else {
         next();
+        //recipes.updateRecipe();
+        console.log("chefAuthZ", next);
       }
     })
     .catch(err => {
@@ -120,10 +117,10 @@ function chefAuthZ(req, res, next) {
 }
 
 //check that recipe exists, belongs to chef
- async function recipeAuth(req, res, next) {
+async function recipeAuth(req, res, next) {
   const chefId = req.token.chef_id;
   const recipeId = req.params.recipe_id;
-  console.log("chefId", chefId, "recipeId", recipeId);
+  console.log("In recipeAuth- chefId", chefId, "recipeId", recipeId);
   await db.findBy({ chef_id: chefId })
     .then(response => {
       console.log("response", response);

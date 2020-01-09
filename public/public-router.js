@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const db = require("../chefs/recipes-model.js");
+const db = require("../recipes/recipes-model.js");
 
 router.get("/", (req, res) => {
   console.log(req.body);
