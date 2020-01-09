@@ -7,9 +7,7 @@ const chefs = require("./chefs-model.js");
 const router = express.Router();
 router.use(express.json());
 
-router.get("/:username", async (req, res, next) => {
-  //chefAuthZ(req.params.username);
-  //console.log(req.token, req.body.chef_id);
+router.get("/:username", chefAuthZ, async (req, res, next) => {
   const username = req.params.username;
   //console.log("username", username);
   await chefs
@@ -40,19 +38,20 @@ router.get("/:username", async (req, res, next) => {
     });
 });
 
-router.post("/:username", async (req, res) => {
-  try {
-    const toAdd = {...req.body, chef_id: req.token.chef_id};
-    //console.log("toAdd", toAdd);
-    await db.add(toAdd).then(response => {
+router.post("/:username", chefAuthZ, async (req, res) => {
+  const toAdd = { ...req.body, chef_id: req.token.chef_id };
+  //console.log("toAdd", toAdd);
+  await db
+    .add(toAdd)
+    .then(response => {
       res.status(201).json(response);
+    })
+    .catch(err => {
+      console.log("create recipe error:", err);
+      res
+        .status(500)
+        .json({ message: "Database error creating recipe. Please try again." });
     });
-  } catch (err) {
-    console.log("create recipe error:", err);
-    res
-      .status(500)
-      .json({ message: "Database error creating recipe. Please try again." });
-  }
 });
 
 router.delete("/:username/:recipe_id", (req, res) => {
@@ -74,18 +73,50 @@ router.delete("/:username/:recipe_id", (req, res) => {
     });
 });
 
-//middleware
+//middleware/helper functions
 //check that username in url exists and matches chef logged in
-function chefAuthZ(chef) {
-  const username = req.token.username;
+function chefAuthZ(req, res, next) {
+  const tokenUser = req.token.username;
+  const urlUser = req.params.username;
+  console.log(urlUser, tokenUser);
+  
   chefs
-    .findBy({ username })
-    .then(response => {
-      //if(response === req.params.username)
-    })
-    .catch(err => {
-      console.log("chefAuthZ error:", err);
-    });
+  .findBy({ username: urlUser })
+  .then(response => {
+    if (Object.keys(response).length === 0) {
+      res.status(403).json({ message: "Page does not exist." });
+    } else if (urlUser !== tokenUser) {
+      res
+        .status(403)
+        .json({ message: "You are not authorized to view this page." });
+    }
+       else {
+      next();
+    }
+  })
+  .catch(err => {
+    console.log("chefAuthZ error:", err);
+  });
+
+  // if (urlUser !== tokenUser) {
+  //   res
+  //     .status(403)
+  //     .json({ message: "You are not authorized to view this page." });
+  // } else {
+  //   //check that user exists in db
+  //   chefs
+  //     .findBy({ username: tokenUser })
+  //     .then(response => {
+  //       if (Object.keys(response).length === 0) {
+  //         res.status(403).json({ message: "Page not found." });
+  //       } else {
+  //         next();
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log("chefAuthZ error:", err);
+  //     });
+  // }
 }
 
 //check that recipe exists, belongs to chef
