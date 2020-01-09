@@ -22,7 +22,7 @@ server.get("/", (req, res) => {
 });
 
 function logger(req, res, next) {
-  console.log(req.method, req.url, Date.UTC());
+  console.log(req.method, req.url);
   next();
 }
 
