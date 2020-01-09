@@ -11,6 +11,8 @@ module.exports = (req, res, next) => {
         res.status(401).json({ message: "Invalid Token. Please login." });
       } else {
         req.token = decodedToken;
+        res.username = decodedToken.username;
+        console.log("middleware username", req.username);
         next();
       }
     });
