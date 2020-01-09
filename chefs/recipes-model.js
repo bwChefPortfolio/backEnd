@@ -5,7 +5,8 @@ module.exports = {
     find,
     findBy,
     findById,
-    remove
+    remove, 
+    update
   };
   
   function find() {
@@ -30,6 +31,12 @@ module.exports = {
   function findById(id) {
     return db("recipes")
       .where({ id });
+  }
+
+  function update(id, changes) {
+    return db('recipes')
+      .where({ id })
+      .update(changes, '*');
   }
 
   function remove(id) {

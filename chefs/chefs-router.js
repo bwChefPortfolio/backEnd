@@ -54,7 +54,7 @@ router.post("/:username", chefAuthZ, async (req, res) => {
     });
 });
 
-router.delete("/:username/:recipe_id", (req, res) => {
+router.delete("/:username/:recipe_id", recipeAuth, (req, res) => {
   //console.log(req.body);
   const id = req.params.recipe_id;
   db.remove(id)
@@ -73,53 +73,77 @@ router.delete("/:username/:recipe_id", (req, res) => {
     });
 });
 
+router.put("/:username/:recipe_id", recipeAuth, (req, res) => {
+  //console.log(req.body);
+ // chefAuthZ();
+  const changes = req.body;
+  const id = req.params.recipe_id;
+  db.update(id, changes)
+    .then(recipe => {
+      if (recipe) {
+        res.status(200).json({ recipe, message: "Recipe successfully updated" })
+      } else {
+        res.status(404).json({ message: "The recipe could not be updated" });
+      }
+    })
+    .catch(err => {
+      console.log("Delete recipe error", err);
+      res.status(500).json({
+        message: "database error removing this recipe, please try again"
+      });
+    });
+});
+
 //middleware/helper functions
 //check that username in url exists and matches chef logged in
 function chefAuthZ(req, res, next) {
   const tokenUser = req.token.username;
   const urlUser = req.params.username;
   console.log(urlUser, tokenUser);
-  
-  chefs
-  .findBy({ username: urlUser })
-  .then(response => {
-    if (Object.keys(response).length === 0) {
-      res.status(403).json({ message: "Page does not exist." });
-    } else if (urlUser !== tokenUser) {
-      res
-        .status(403)
-        .json({ message: "You are not authorized to view this page." });
-    }
-       else {
-      next();
-    }
-  })
-  .catch(err => {
-    console.log("chefAuthZ error:", err);
-  });
 
-  // if (urlUser !== tokenUser) {
-  //   res
-  //     .status(403)
-  //     .json({ message: "You are not authorized to view this page." });
-  // } else {
-  //   //check that user exists in db
-  //   chefs
-  //     .findBy({ username: tokenUser })
-  //     .then(response => {
-  //       if (Object.keys(response).length === 0) {
-  //         res.status(403).json({ message: "Page not found." });
-  //       } else {
-  //         next();
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log("chefAuthZ error:", err);
-  //     });
-  // }
+  chefs
+    .findBy({ username: urlUser })
+    .then(response => {
+      if (Object.keys(response).length === 0) {
+        res.status(403).json({ message: "Page does not exist." });
+      } else if (urlUser !== tokenUser) {
+        res
+          .status(403)
+          .json({ message: "You are not authorized to view this page." });
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
+      console.log("chefAuthZ error:", err);
+    });
 }
 
 //check that recipe exists, belongs to chef
-function recipeAuth(recipeId) {}
+ async function recipeAuth(req, res, next) {
+  const chefId = req.token.chef_id;
+  const recipeId = req.params.recipe_id;
+  console.log("chefId", chefId, "recipeId", recipeId);
+  await db.findBy({ chef_id: chefId })
+    .then(response => {
+      console.log("response", response);
+      const selected = response.find(recipe => recipe.id == recipeId);
+      console.log("selected", selected);
+      if (response.length === 0 || !selected) {
+        res
+          .status(404)
+          .json({ message: `Recipe id ${recipeId} does not exist.` });
+      } else if (selected.chef_id !== chefId) {
+        res
+          .status(403)
+          .json({ message: "You are not authorized to view this page." });
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
+      console.log("recipeAuth error:", err);
+    });
+}
 
 module.exports = router;
