@@ -3,9 +3,9 @@ const router = require("express").Router();
 const db = require("../recipes/recipes-model.js");
 const chefs = require("./chefs-model.js");
 
-const recipes = require("../recipes/recipes-router.js")
+const recipeRouter = require("../recipes/recipes-router.js")
 
-router.use("/:username", chefAuthZ, recipes.router);
+router.use("/:username", chefAuthZ, recipeRouter);
 
 router.get("/",  async (req, res) => {
   //const username = req.params.username;
