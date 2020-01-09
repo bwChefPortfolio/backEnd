@@ -7,6 +7,27 @@ const recipes = require("../recipes/recipes-router.js")
 
 router.use("/:username", chefAuthZ, recipes.router);
 
+router.get("/",  async (req, res) => {
+  //const username = req.params.username;
+  //console.log("username", username);
+  await chefs
+    .findBy(req.body)
+    .then(resp => {
+        if (resp.length === 0) {
+          res.status(200).json({ message: "No Data for chef." });
+        } else {
+          res.status(200).json(resp);
+        }
+     
+    })
+    .catch(err => {
+      console.log("GET to /chefs error:", err);
+      res
+        .status(500)
+        .json({ message: "Database error getting chef data. Please try again." });
+    });
+});
+
 router.get("/:username", chefAuthZ, async (req, res, next) => {
   const username = req.params.username;
   //console.log("username", username);

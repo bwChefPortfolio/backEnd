@@ -5,16 +5,17 @@ https://chef-portfolio-backend.herokuapp.com/
 
 #### API
 
-| completed? | Method | Endpoint                  | Need Auth? | Description                                    | Notes                                                                                                          |
-| ---------- | ------ | ------------------------- | ---------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| y          | GET    | /                         | no         | API functional sanity check                    |  |
-| y          | GET    | /home                     | no         | returns a list of all recipes in database      |     can include optional recipes search in req.body, eg: .get('/home', {chef_id: 1}) or .get('/home', {meal_type: dinner})                                                                                                           |
-| y          | POST   | /auth/register            | no         | returns new chef info (see chefs schema below) |                                                                                                                |
-| y          | POST   | /auth/login               | no         | returns token                                  |                                                                                                                |
-| y          | GET    | /chefs/:username           | yes        | returns all recipes for given chef             |                                                                                                                |
-|      y      | POST   | /chefs/:username           | yes        | returns added recipe                           |                                                                                                                |
-|       y     | PUT    | /chefs/:username/:recipe_id | yes        | returns the number of edited records                          |                                                                                                                |
-|      y      | DELETE | /chefs/:username/:recipe_id | yes        | returns the number of deleted records              |                                                                                                                |
+| Method | Endpoint                    | Need Auth? | Description                                             | Notes                                                                                                                  |
+| ------ | --------------------------- | ---------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| GET    | /                           | no         | API functional sanity check                             |                                                                                                                        |
+| GET    | /home                       | no         | returns a list of all recipes in database               | can include optional recipes search in req.body, eg: .get('/home', {chef_id: 1}) or .get('/home', {meal_type: dinner}) |
+| POST   | /auth/register              | no         | returns new chef info (see chefs schema below)          |                                                                                                                        |
+| POST   | /auth/login                 | no         | returns token                                           |                                                                                                                        |
+| GET    | /chefs                      | yes        | returns data for given chef(s) (see chefs schema below) |                                                                                                                        |
+| GET    | /chefs/:username            | yes        | returns all recipes for given chef                      | can include optional chefs search in req.body, eg: .get('/chefs', {id: 1}) or .get('/chefs', {last_name: "Lagase"})    |
+| POST   | /chefs/:username            | yes        | returns added recipe                                    |                                                                                                                        |
+| PUT    | /chefs/:username/:recipe_id | yes        | returns the number of edited records                    |                                                                                                                        |
+| DELETE | /chefs/:username/:recipe_id | yes        | returns the number of deleted records                   |                                                                                                                        |
 
 #### Chefs Schema
 
