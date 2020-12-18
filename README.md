@@ -1,4 +1,7 @@
-# backEnd
+# Backend for Chef Portfoilo App
+An app that allows chefs to exhibit, share and show off their signature recipes.
+
+### Tech Stack: NodeJS, Express, Knex, SQLite3, JWT, BcryptJS
 
 hosted at
 https://chef-portfolio-backend.herokuapp.com/
